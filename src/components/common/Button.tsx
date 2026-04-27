@@ -1,6 +1,22 @@
-﻿export default function Button({ children, ...props }: any) { return ( <button {...props} className=\
-px-4
-py-2
-bg-blue-600
-text-white
-rounded\> {children} </button> ); }
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  children: React.ReactNode;
+  variant?: 'primary' | 'secondary' | 'danger';
+}
+
+export default function Button({ children, className = '', variant = 'primary', ...props }: ButtonProps) {
+  const baseStyles = "px-4 py-2 rounded font-medium transition-colors";
+  const variants = {
+    primary: "bg-blue-600 text-white hover:bg-blue-700",
+    secondary: "bg-gray-200 text-gray-800 hover:bg-gray-300",
+    danger: "bg-red-600 text-white hover:bg-red-700"
+  };
+
+  return (
+    <button
+      {...props}
+      className={`${baseStyles} ${variants[variant]} ${className}`}
+    >
+      {children}
+    </button>
+  );
+}
