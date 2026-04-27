@@ -1,0 +1,1 @@
+﻿import { create } from 'zustand'; import { Product } from '../types'; interface InventoryState { products: Product[]; setProducts: (products: Product[]) => void; } export const useInventoryStore = create<InventoryState>((set) => ({ products: [], setProducts: (products) => set({ products }), }));
