@@ -12,6 +12,7 @@ import {
   Search
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { VoiceAssistantUI } from '../common/VoiceAssistantUI';
 
 const SidebarItem = ({ to, icon: Icon, label, active }: { to: string, icon: any, label: string, active: boolean }) => (
   <Link to={to}>
@@ -48,7 +49,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   ];
 
   return (
-    <div className="flex min-h-screen bg-background text-foreground overflow-hidden">
+    <div className="flex min-h-screen bg-background text-foreground overflow-hidden relative">
       {/* Sidebar */}
       <aside className="w-72 glass border-r border-border p-6 flex flex-col gap-8">
         <div className="flex items-center gap-3 px-2">
@@ -115,6 +116,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           {children}
         </div>
       </main>
+
+      <VoiceAssistantUI />
     </div>
   );
 }

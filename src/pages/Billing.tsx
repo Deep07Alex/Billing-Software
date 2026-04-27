@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { 
   Plus, 
   Trash2, 
@@ -11,32 +10,21 @@ import {
   Calculator
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-interface Item {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-}
+import { useBillingStore } from '../store/useBillingStore';
 
 export default function Billing() {
-  const [items, setItems] = useState<Item[]>([
-    { id: '1', name: 'Software Development', price: 15000, quantity: 1 }
-  ]);
-  const [clientName, setClientName] = useState('');
-  const [invoiceDate, setInvoiceDate] = useState(new Date().toISOString().split('T')[0]);
-
-  const addItem = () => {
-    setItems([...items, { id: Math.random().toString(), name: '', price: 0, quantity: 1 }]);
-  };
-
-  const removeItem = (id: string) => {
-    setItems(items.filter(item => item.id !== id));
-  };
-
-  const updateItem = (id: string, field: keyof Item, value: string | number) => {
-    setItems(items.map(item => item.id === id ? { ...item, [field]: value } : item));
-  };
+  const { 
+    items, 
+    clientName, 
+    invoiceDate, 
+    notes,
+    setClientName, 
+    setInvoiceDate, 
+    setNotes,
+    addItem, 
+    removeItem, 
+    updateItem 
+  } = useBillingStore();
 
   const subtotal = items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
   const tax = subtotal * 0.18; // 18% GST
@@ -93,7 +81,7 @@ export default function Billing() {
               <div className="flex items-center justify-between border-b border-border pb-2">
                 <h3 className="font-bold text-lg">Invoice Items</h3>
                 <button 
-                  onClick={addItem}
+                  onClick={() => addItem()}
                   className="text-primary hover:bg-primary/10 px-3 py-1 rounded-lg text-sm font-bold flex items-center gap-1 transition-colors"
                 >
                   <Plus size={16} /> Add Item
@@ -101,13 +89,14 @@ export default function Billing() {
               </div>
 
               <div className="space-y-3">
-                <AnimatePresence>
+                <AnimatePresence mode="popLayout">
                   {items.map((item) => (
                     <motion.div 
                       key={item.id}
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, scale: 0.95 }}
+                      layout
                       className="grid grid-cols-12 gap-4 items-center"
                     >
                       <div className="col-span-6">
@@ -136,7 +125,7 @@ export default function Billing() {
                           className="w-full bg-secondary/30 border border-transparent rounded-lg px-3 py-2 focus:bg-secondary/50 focus:border-border transition-all outline-none text-center"
                         />
                       </div>
-                      <div className="col-span-1 text-right font-bold text-sm">
+                      <div className="col-span-1 text-right font-bold text-sm whitespace-nowrap">
                         ₹{(item.price * item.quantity).toLocaleString()}
                       </div>
                       <div className="col-span-1 flex justify-end">
@@ -160,6 +149,8 @@ export default function Billing() {
             </h3>
             <textarea 
               placeholder="Add any specific instructions or terms..."
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
               className="w-full h-24 bg-secondary/50 border border-border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none transition-all"
             />
           </div>
